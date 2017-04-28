@@ -1,0 +1,9 @@
+parameters:
+    schemes: http
+    domain: orangetools.ilcfrance.predator.loc
+    mail_from:                 "orangetools@orangetools.ilcfrance.predator.loc"
+    mail_from_name:            "Ateliers Orange ILCFrance"
+    mail_replay:                 "lea.paolini@ilcfrance.com"
+    mail_replay_name:                 "Léa Paolini"
+    sitename:                  "OrangeTools.ILCFrance.predator.loc"
+    mailer_transport: sendmail

@@ -1,0 +1,10 @@
+parameters:
+    schemes: https
+    domain: orangetools.ilcfrance.com
+    mail_from:                 "orangetools@ilcfrance.com"
+    mail_from_name:            "Ateliers Orange ILCFrance"
+    mail_replay:                 "lea.paolini@ilcfrance.com"
+    mail_replay_name:                 "Léa Paolini"
+    sitename:                  "OrangeTools.ILCFrance.com"
+    mailer_transport: smtp
+    siteversion: 1.0.2

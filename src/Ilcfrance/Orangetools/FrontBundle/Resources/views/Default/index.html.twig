@@ -1,0 +1,72 @@
+{% extends 'IlcfranceOrangetoolsResBundle::admin.template.html.twig' %}
+{%block breadcrumb%}
+<ol class="breadcrumb">
+	<li class="active"><a href="{{ path('ilcfrance_orangetools_front_homepage')}}"> {{ faIco('home fa-fw')}} {{ 'ilcfrance.orangetools.front.homepage.breadcrumb'|trans }}</a></li>
+</ol>
+{%endblock breadcrumb%}
+{%block maincontent%}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="box box-danger">
+			<div class="box-header">
+				<h3 class="box-title">Les modules auxquels vous avez étés préinscrits sont :</h3>
+			</div>
+			<div class="box-body">
+				<ul>
+				{% for modulepreinscription in trainee.modulepreinscriptions %}
+					<li>
+						<h3>{{ modulepreinscription.moduleformation.title }}</h3>
+						{% if modulepreinscription.moduleformation.description is not empty %}
+						{{ modulepreinscription.moduleformation.description|raw }}
+						{% endif %}
+						{% set currsession = null %}
+						{% for sessioninscription in trainee.sessioninscriptions %}
+							{% if sessioninscription.sessionformation.moduleformation.id == modulepreinscription.moduleformation.id %}
+							{% set currsession = sessioninscription %}
+							{% endif %}
+						{% endfor %}
+						{% if null != currsession %}
+							<br/>
+							<blockquote>
+								Session choisie :
+								<u><i>{{ currsession.sessionformation.title }}</i></u><br/>
+								{{ faIco('clock-o fa-fw') }} <b>{{ currsession.sessionformation.dtStart|date('d/m/Y', timezone) }}</b> {{faIco('at fa-fw')}} <b>{{ currsession.sessionformation.dtStart|date('H:i:s', timezone) }}</b> {{ faIco('arrow-right fa-fw') }} {{ faIco('clock-o fa-fw') }} <b>{{ currsession.sessionformation.dtEnd|date('d/m/Y', timezone) }}</b> {{faIco('at fa-fw')}} <b>{{ currsession.sessionformation.dtEnd|date('H:i:s', timezone) }}</b> {%if currsession.sessionformation.dtInfo is not empty %}({{ currsession.sessionformation.dtInfo }}){% endif %}<br/>
+								{{ faIco('map-marker fa-fw') }} <b>{{ currsession.sessionformation.location|raw }}</b><br/>
+								{%if currsession.sessionformation.otherInfos is not empty %}{{ faIco('info-circle fa-fw') }} {{ currsession.sessionformation.otherInfos|raw }}<br/>{% endif %}
+								{%if currsession.sessionformation.conditionsReport is not empty %}{{ faIco('warning fa-fw') }} {{ 'Sessionformation.conditionsReport'|trans|raw }} : <u>{{ currsession.sessionformation.conditionsReport }}</u><br/>{% endif %}
+								{%if currsession.sessionformation.phoneContactCenter is not empty %}{{ faIco('phone fa-fw') }} <u>{{ currsession.sessionformation.phoneContactCenter }}</u><br/>{% endif %}
+							</blockquote>
+						{% else %}
+						<br/>
+						<br/>
+						{% endif %}
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% for SessioninscriptionNewForm in SessioninscriptionNewForms %}
+		<div class="box box-danger">
+			<div class="box-header">
+				<h3 class="box-title">
+					{% for modulepreinscription in trainee.modulepreinscriptions %}
+					{% if modulepreinscription.moduleformation.id ==
+					SessioninscriptionNewForm.moduleformation.vars.value %}
+					{{ modulepreinscription.moduleformation.title }}
+					{% endif %}
+					{% endfor %}
+				</h3>
+			</div>
+			<div class="box-body">
+				{{form_start(SessioninscriptionNewForm, {'method':'POST', 'action': path('ilcfrance_orangetools_front_homepagePost'), 'style': 'horizontal'})}}
+				{{form_row(SessioninscriptionNewForm.sessionformation, {'label_col': 3, 'widget_col': 9 })}}
+				<div class="form-group"><div class="col-lg-offset-3 col-lg-4">
+					<button class="btn btn-danger btn-block btn-flat" type="submit">{{faIco('floppy-o fa-fw')}} {{'ilcfrance.orangetools.front.SessioninscriptionNewForm.btnSubmit'|trans|raw}}</button>
+				</div></div>
+				{{form_end(SessioninscriptionNewForm)}}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{%endblock maincontent%}

@@ -1,0 +1,64 @@
+parameters:
+    sasedev_extra_tools.extension.twig.class: Sasedev\ExtraToolsBundle\Twig\TwigExtension
+
+services:
+  translation.loader.po:
+    class: Sasedev\ExtraToolsBundle\Translation\Loader\PotFileLoader
+    tags:
+      - { name: translation.loader, alias: po }
+      - { name: translation.loader, alias: pot }
+
+  sasedev_extra_tools.date_formatter:
+    class: Sasedev\ExtraToolsBundle\Util\DateFormatter
+
+  sasedev_extra_tools.unit_converter:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\ChainUnitConverter
+
+  sasedev_extra_tools.ratio_unit_converter:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\RatioUnitConverter
+    tags:
+      - { name: sasedev_extra_tools.unit_converter }
+
+  sasedev_extra_tools.ratio_unit_provider.distance:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\DistanceUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.distance.fr:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\fr\DistanceUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.time:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\TimeUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.time.fr:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\fr\TimeUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.computing_capacity:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\ComputingCapacityUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.weight:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\WeightUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.ratio_unit_provider.frequency:
+    class: Sasedev\ExtraToolsBundle\Util\UnitConverter\Extension\FrequencyUnitProvider
+    tags:
+      - { name: sasedev_extra_tools.ratio_unit_provider }
+
+  sasedev_extra_tools.twig.extension:
+    class: %sasedev_extra_tools.extension.twig.class%
+    calls:
+      - [ setUnitConverter, [ "@sasedev_extra_tools.unit_converter" ] ]
+      - [ setTranslator, [ "@translator" ] ]
+    tags:
+      - { name: twig.extension }
+    public: false

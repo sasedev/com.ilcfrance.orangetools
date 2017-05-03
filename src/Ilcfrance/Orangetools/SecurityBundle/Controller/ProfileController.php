@@ -9,6 +9,7 @@ use Ilcfrance\Orangetools\SecurityBundle\Form\User\UpdateMobileTForm as UserUpda
 use Ilcfrance\Orangetools\ResBundle\Controller\SasedevController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Security\Core\Encoder\Pbkdf2PasswordEncoder;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -23,7 +24,7 @@ class ProfileController extends SasedevController
 		$this->addTwigVar('menu_active', 'profile');
 	}
 
-	public function profileGetAction()
+	public function profileGetAction(Request $request)
 	{
 		$sc = $this->getSecurityTokenStorage();
 		$user = $sc->getToken()->getUser();
@@ -54,9 +55,9 @@ class ProfileController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsSecurityBundle:Profile:index.html.twig', $this->getTwigVars());
 	}
 
-	public function profilePostAction()
+	public function profilePostAction(Request $request)
 	{
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			// return $this->redirect($this->generateUrl('ilcfrance_orangetools_security_profile'));
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_security_profile');
@@ -75,7 +76,6 @@ class ProfileController extends SasedevController
 		$this->addTwigVar('tabActive', $this->getSession()->get('tabActive', 2));
 		$this->getSession()->remove('tabActive');
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 		$em = $this->getEntityManager();
 

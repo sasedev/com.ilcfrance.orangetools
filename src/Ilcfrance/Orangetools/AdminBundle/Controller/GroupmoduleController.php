@@ -9,6 +9,7 @@ use Ilcfrance\Orangetools\AdminBundle\Form\Groupmodule\ImportTForm as Groupmodul
 use Ilcfrance\Orangetools\AdminBundle\Form\Groupmodule\UpdateNameTForm as GroupmoduleUpdateNameTForm;
 use Ilcfrance\Orangetools\AdminBundle\Form\Moduleformation\NewTForm as ModuleformationNewTForm;
 use Ilcfrance\Orangetools\DataBundle\MongoDocument\Trace;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -23,7 +24,7 @@ class GroupmoduleController extends SasedevController
 		$this->addTwigVar('menu_active', 'admin_groupmodules');
 	}
 
-	public function listAction()
+	public function listAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_groupmodules_list');
 
@@ -38,7 +39,7 @@ class GroupmoduleController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Groupmodule:list.html.twig', $this->getTwigVars());
 	}
 
-	public function exportAction()
+	public function exportAction(Request $request)
 	{
 		$em = $this->getEntityManager();
 
@@ -115,7 +116,7 @@ class GroupmoduleController extends SasedevController
 		return $response;
 	}
 
-	public function addGetAction()
+	public function addGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_groupmodules_add');
 
@@ -131,14 +132,13 @@ class GroupmoduleController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Groupmodule:add.html.twig', $this->getTwigVars());
 	}
 
-	public function addPostAction()
+	public function addPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_groupmodules_add');
 
 		$groupmodule = new Groupmodule();
 		$groupmoduleNewForm = $this->createForm(GroupmoduleNewTForm::class, $groupmodule);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['GroupmoduleNewForm'])) {
@@ -170,7 +170,7 @@ class GroupmoduleController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Groupmodule:add.html.twig', $this->getTwigVars());
 	}
 
-	public function importGetAction()
+	public function importGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_groupmodules_import');
 
@@ -184,13 +184,12 @@ class GroupmoduleController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Groupmodule:import.html.twig', $this->getTwigVars());
 	}
 
-	public function importPostAction()
+	public function importPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_groupmodules_import');
 
 		$groupmoduleImportForm = $this->createForm(GroupmoduleImportTForm::class);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['GroupmoduleImportForm'])) {
@@ -275,14 +274,14 @@ class GroupmoduleController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Groupmodule:import.html.twig', $this->getTwigVars());
 	}
 
-	public function deleteAction($id)
+	public function deleteAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_groupmodule_list');
 		}
@@ -310,14 +309,14 @@ class GroupmoduleController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editGetAction($id)
+	public function editGetAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_groupmodule_list');
 		}
@@ -369,14 +368,14 @@ class GroupmoduleController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editPostAction($id)
+	public function editPostAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_groupmodule_list');
 		}
@@ -401,7 +400,6 @@ class GroupmoduleController extends SasedevController
 				$this->addTwigVar('stabActive', $this->getSession()->get('stabActive', 1));
 				$this->getSession()->remove('stabActive');
 
-				$request = $this->getRequest();
 				$reqData = $request->request->all();
 
 				if (isset($reqData['GroupmoduleUpdateNameForm'])) {

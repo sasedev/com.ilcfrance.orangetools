@@ -1,13 +1,13 @@
 <?php
-
 namespace Ilcfrance\Orangetools\SecurityBundle\Controller;
 
 use Ilcfrance\Orangetools\ResBundle\Controller\SasedevController;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends SasedevController
 {
 
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
 		if ($this->isGranted('IS_AUTHENTICATED_FULLY') || $this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
 			if ($this->isGranted('ROLE_ADMIN')) {
@@ -21,5 +21,4 @@ class DefaultController extends SasedevController
 			return $this->redirect($this->generateUrl('ilcfrance_orangetools_security_profile'));
 		}
 	}
-
 }

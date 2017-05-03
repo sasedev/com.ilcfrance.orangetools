@@ -1,5 +1,4 @@
 <?php
-
 namespace Sasedev\Commons\SharedBundle\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -83,13 +82,11 @@ class BaseController extends Controller
 	 */
 	public function getLogger()
 	{
-
 		if (!$this->container->has('logger')) {
 			throw new \LogicException('The MonologBundle is not registered in your application.');
 		}
 
 		return $this->container->get('logger');
-
 	}
 
 	/**
@@ -101,13 +98,11 @@ class BaseController extends Controller
 	 */
 	public function getMailer()
 	{
-
 		if (!$this->container->has('mailer')) {
 			throw new \LogicException('The SwiftmailerBundle is not registered in your application.');
 		}
 
 		return $this->container->get('mailer');
-
 	}
 
 	/**
@@ -117,9 +112,7 @@ class BaseController extends Controller
 	 */
 	public function getRouter()
 	{
-
 		return $this->container->get('router');
-
 	}
 
 	/**
@@ -129,9 +122,7 @@ class BaseController extends Controller
 	 */
 	public function getRequest()
 	{
-
 		return $this->container->get('request_stack')->getCurrentRequest();
-
 	}
 
 	/**
@@ -141,9 +132,7 @@ class BaseController extends Controller
 	 */
 	public function getSession()
 	{
-
 		return $this->container->get('session');
-
 	}
 
 	/**
@@ -153,9 +142,7 @@ class BaseController extends Controller
 	 */
 	public function getTranslator()
 	{
-
 		return $this->container->get('translator');
-
 	}
 
 	/**
@@ -165,9 +152,7 @@ class BaseController extends Controller
 	 */
 	public function getSecurityTokenStorage()
 	{
-
 		return $this->container->get('security.token_storage');
-
 	}
 
 	/**
@@ -177,9 +162,7 @@ class BaseController extends Controller
 	 */
 	public function getSecurityAuthorizationChecker()
 	{
-
 		return $this->container->get('security.authorization_checker');
-
 	}
 
 	/**
@@ -189,9 +172,7 @@ class BaseController extends Controller
 	 */
 	public function getValidator()
 	{
-
 		return $this->container->get('validator');
-
 	}
 
 	/**
@@ -201,9 +182,7 @@ class BaseController extends Controller
 	 */
 	public function getTemplating()
 	{
-
 		return $this->container->get('templating');
-
 	}
 
 	/**
@@ -211,11 +190,12 @@ class BaseController extends Controller
 	 *
 	 * @return string
 	 */
-	public function getReferer()
+	public function getReferer(Request $request = null)
 	{
-
-		return $this->getRequest()->headers->get('referer');
-
+		if (null == $request) {
+			$request = $this->getRequest();
+		}
+		return $request->headers->get('referer');
 	}
 
 	/**
@@ -225,14 +205,12 @@ class BaseController extends Controller
 	 */
 	public function getEntityManager($name = null)
 	{
-
 		$entityManager = $this->getDoctrine()->getManager($name);
 		if (!$entityManager->isOpen()) {
 			$entityManager = $entityManager->create($entityManager->getConnection(), $entityManager->getConfiguration());
 		}
 
 		return $entityManager;
-
 	}
 
 	/**
@@ -247,9 +225,7 @@ class BaseController extends Controller
 	 */
 	public function translate($id, $parameters = array(), $domain = 'messages', $locale = null)
 	{
-
 		return $this->getTranslator()->trans($id, $parameters, $domain, $locale);
-
 	}
 
 	/**
@@ -263,9 +239,7 @@ class BaseController extends Controller
 	 */
 	public function sendmail($message)
 	{
-
 		return $this->getMailer()->send($message);
-
 	}
 
 	/**
@@ -278,9 +252,7 @@ class BaseController extends Controller
 	 */
 	public function startswith($string, $prefix)
 	{
-
 		return strpos($string, $prefix) === 0;
-
 	}
 
 	/**
@@ -293,7 +265,6 @@ class BaseController extends Controller
 	 */
 	public function endswith($string, $suffix)
 	{
-
 		$strlen = strlen($string);
 		$testlen = strlen($suffix);
 		if ($testlen > $strlen) {
@@ -301,7 +272,6 @@ class BaseController extends Controller
 		}
 
 		return substr_compare($string, $suffix, -$testlen) === 0;
-
 	}
 
 	/**
@@ -313,7 +283,6 @@ class BaseController extends Controller
 	 */
 	public function normalize($string)
 	{
-
 		$table = array(
 			'Š' => 'S',
 			'š' => 's',
@@ -390,7 +359,6 @@ class BaseController extends Controller
 		);
 
 		return strtr($string, $table);
-
 	}
 
 	/**
@@ -400,9 +368,7 @@ class BaseController extends Controller
 	 */
 	public function getTwigVars()
 	{
-
 		return $this->twig_vars;
-
 	}
 
 	/**
@@ -414,11 +380,9 @@ class BaseController extends Controller
 	 */
 	public function setTwigVars($twig_vars)
 	{
-
 		$this->twig_vars = $twig_vars;
 
 		return $this;
-
 	}
 
 	/**
@@ -432,11 +396,9 @@ class BaseController extends Controller
 	 */
 	public function addTwigVar($name, $value = null)
 	{
-
 		$this->twig_vars[$name] = $value;
 
 		return $this;
-
 	}
 
 	/**
@@ -446,9 +408,7 @@ class BaseController extends Controller
 	 */
 	public function getHeadMetas()
 	{
-
 		return $this->head_metas;
-
 	}
 
 	/**
@@ -460,13 +420,11 @@ class BaseController extends Controller
 	 */
 	public function setHeadMetas($head_metas)
 	{
-
 		$this->head_metas = $head_metas;
 
 		$this->twig_vars['head_metas'] = $this->head_metas;
 
 		return $this;
-
 	}
 
 	/**
@@ -478,13 +436,11 @@ class BaseController extends Controller
 	 */
 	public function addHeadMeta(Meta $head_meta)
 	{
-
 		$this->head_metas[] = $head_meta;
 
 		$this->twig_vars['head_metas'] = $this->head_metas;
 
 		return $this;
-
 	}
 
 	/**
@@ -494,9 +450,7 @@ class BaseController extends Controller
 	 */
 	public function getHeadLinks()
 	{
-
 		return $this->head_links;
-
 	}
 
 	/**
@@ -508,13 +462,11 @@ class BaseController extends Controller
 	 */
 	public function setHeadLinks($head_links)
 	{
-
 		$this->head_links = $head_links;
 
 		$this->twig_vars['head_links'] = $this->head_links;
 
 		return $this;
-
 	}
 
 	/**
@@ -526,13 +478,11 @@ class BaseController extends Controller
 	 */
 	public function addHeadLink(Link $head_link)
 	{
-
 		$this->head_links[] = $head_link;
 
 		$this->twig_vars['head_links'] = $this->head_links;
 
 		return $this;
-
 	}
 
 	/**
@@ -542,9 +492,7 @@ class BaseController extends Controller
 	 */
 	public function getHeadScripts()
 	{
-
 		return $this->head_scripts;
-
 	}
 
 	/**
@@ -556,13 +504,11 @@ class BaseController extends Controller
 	 */
 	public function setHeadScripts($head_scripts)
 	{
-
 		$this->head_scripts = $head_scripts;
 
 		$this->twig_vars['head_scripts'] = $this->head_scripts;
 
 		return $this;
-
 	}
 
 	/**
@@ -574,13 +520,11 @@ class BaseController extends Controller
 	 */
 	public function addHeadScript(Script $head_script)
 	{
-
 		$this->head_scripts[] = $head_script;
 
 		$this->twig_vars['head_scripts'] = $this->head_scripts;
 
 		return $this;
-
 	}
 
 	/**
@@ -590,9 +534,7 @@ class BaseController extends Controller
 	 */
 	public function getHeadStyles()
 	{
-
 		return $this->head_styles;
-
 	}
 
 	/**
@@ -604,13 +546,11 @@ class BaseController extends Controller
 	 */
 	public function setHeadStyles($head_styles)
 	{
-
 		$this->head_styles = $head_styles;
 
 		$this->twig_vars['head_styles'] = $this->head_styles;
 
 		return $this;
-
 	}
 
 	/**
@@ -622,13 +562,11 @@ class BaseController extends Controller
 	 */
 	public function addHeadStyle(Style $head_style)
 	{
-
 		$this->head_styles[] = $head_style;
 
 		$this->twig_vars['head_styles'] = $this->head_styles;
 
 		return $this;
-
 	}
 
 	/**
@@ -637,9 +575,7 @@ class BaseController extends Controller
 	 */
 	public function getBrowserPageTitle()
 	{
-
 		return $this->browser_page_title;
-
 	}
 
 	/**
@@ -648,13 +584,11 @@ class BaseController extends Controller
 	 */
 	public function setBrowserPageTitle($title)
 	{
-
 		$this->browser_page_title = $title;
 
 		$this->twig_vars['browser_page_title'] = $this->browser_page_title;
 
 		return $this;
-
 	}
 
 	/**
@@ -663,9 +597,7 @@ class BaseController extends Controller
 	 */
 	public function getPageTitle()
 	{
-
 		return $this->page_title;
-
 	}
 
 	/**
@@ -674,13 +606,11 @@ class BaseController extends Controller
 	 */
 	public function setPageTitle($title)
 	{
-
 		$this->page_title = $title;
 
 		$this->twig_vars['page_title'] = $this->page_title;
 
 		return $this;
-
 	}
 
 	/**
@@ -690,9 +620,7 @@ class BaseController extends Controller
 	 */
 	public function getBodyScripts()
 	{
-
 		return $this->body_scripts;
-
 	}
 
 	/**
@@ -704,13 +632,11 @@ class BaseController extends Controller
 	 */
 	public function setBodyScripts($body_scripts)
 	{
-
 		$this->body_scripts = $body_scripts;
 
 		$this->twig_vars['body_scripts'] = $this->body_scripts;
 
 		return $this;
-
 	}
 
 	/**
@@ -722,14 +648,11 @@ class BaseController extends Controller
 	 */
 	public function addBodyScript(Script $body_script)
 	{
-
 		$this->body_scripts[] = $body_script;
 
 		$this->twig_vars['body_scripts'] = $this->body_scripts;
 
 		return $this;
-
 	}
-
 }
 

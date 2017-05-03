@@ -2,6 +2,7 @@
 namespace Ilcfrance\Orangetools\AdminBundle\Controller;
 
 use Ilcfrance\Orangetools\ResBundle\Controller\SasedevController;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends SasedevController
 {
@@ -12,7 +13,7 @@ class DefaultController extends SasedevController
 		$this->addTwigVar('menu_active', 'admin');
 	}
 
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
 		if ($this->isGranted('ROLE_TRAINEE')) {
 			return $this->redirect($this->generateUrl('ilcfrance_orangetools_security_homepage'));

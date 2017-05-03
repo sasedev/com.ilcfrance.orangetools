@@ -1,5 +1,4 @@
 <?php
-
 namespace Ilcfrance\Orangetools\FrontBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -8,21 +7,19 @@ use Ilcfrance\Orangetools\DataBundle\Entity\User;
 use Ilcfrance\Orangetools\FrontBundle\Form\SessioninscriptionNewTForm;
 use Ilcfrance\Orangetools\DataBundle\Entity\Sessioninscription;
 use Ilcfrance\Orangetools\DataBundle\Entity\Modulepreinscription;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends SasedevController
 {
 
 	public function __construct()
 	{
-
 		parent::__construct();
 		$this->addTwigVar('menu_active', 'front');
-
 	}
 
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
-
 		if ($this->isGranted('ROLE_ADMIN')) {
 			return $this->redirect($this->generateUrl('ilcfrance_orangetools_security_homepage'));
 		}
@@ -41,7 +38,10 @@ class DefaultController extends SasedevController
 				$sessioninscription = new Sessioninscription();
 				$sessioninscription->setUser($trainee);
 
-				$sessioninscriptionNewForm = $this->createForm(SessioninscriptionNewTForm::class, $sessioninscription, array('moduleformation' => $moduleformation, 'user' => $trainee));
+				$sessioninscriptionNewForm = $this->createForm(SessioninscriptionNewTForm::class, $sessioninscription, array(
+					'moduleformation' => $moduleformation,
+					'user' => $trainee
+				));
 
 				$tempSessioninscriptionNewForms[$moduleformation->getId()] = $sessioninscriptionNewForm;
 			}
@@ -61,12 +61,10 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.homepage.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:index.html.twig', $this->getTwigVars());
-
 	}
 
-	public function indexPostAction()
+	public function indexPostAction(Request $request)
 	{
-
 		if ($this->isGranted('ROLE_ADMIN')) {
 			return $this->redirect($this->generateUrl('ilcfrance_orangetools_security_homepage'));
 		}
@@ -85,13 +83,15 @@ class DefaultController extends SasedevController
 				$sessioninscription = new Sessioninscription();
 				$sessioninscription->setUser($trainee);
 
-				$sessioninscriptionNewForm = $this->createForm(SessioninscriptionNewTForm::class, $sessioninscription, array('moduleformation' => $moduleformation, 'user' => $trainee));
+				$sessioninscriptionNewForm = $this->createForm(SessioninscriptionNewTForm::class, $sessioninscription, array(
+					'moduleformation' => $moduleformation,
+					'user' => $trainee
+				));
 
 				$tempSessioninscriptionNewForms[$moduleformation->getId()] = $sessioninscriptionNewForm;
 			}
 		}
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['SessioninscriptionNewForm'])) {
@@ -122,11 +122,7 @@ class DefaultController extends SasedevController
 								$replyTo = $this->getParameter('mail_replay');
 								$replyToName = $this->getParameter('mail_replay_name');
 								$subject = '[' . $this->getParameter('sitename') . '] ' . $this->translate('ilcfrance.orangetools.front.Sessioninscription.mail.params.subject');
-								$message = \Swift_Message::newInstance()->setFrom($from, $fromName)
-								->setReplyTo($replyTo, $replyToName)
-								->setTo($trainee->getEmail(), $trainee->getFullname())
-								->setSubject($subject)
-								->setBody($this->renderView('IlcfranceOrangetoolsFrontBundle:Default:sendConfirmation.mail.html.twig', $mvars), 'text/html');
+								$message = \Swift_Message::newInstance()->setFrom($from, $fromName)->setReplyTo($replyTo, $replyToName)->setTo($trainee->getEmail(), $trainee->getFullname())->setSubject($subject)->setBody($this->renderView('IlcfranceOrangetoolsFrontBundle:Default:sendConfirmation.mail.html.twig', $mvars), 'text/html');
 
 								$this->sendmail($message);
 							} catch (\Exception $e) {
@@ -134,20 +130,15 @@ class DefaultController extends SasedevController
 								$logger->addCritical($e->getLine() . ' ' . $e->getMessage() . ' ' . $e->getTraceAsString());
 							}
 
-							$this->addFlash(
-								'success',
-								$this->translate('ilcfrance.orangetools.trainee.Sessioninscription.add.success', array('%sessionformation%' => $sessioninscription->getSessionformation()->getChoiceLabelFull()))
-								);
+							$this->addFlash('success', $this->translate('ilcfrance.orangetools.trainee.Sessioninscription.add.success', array(
+								'%sessionformation%' => $sessioninscription->getSessionformation()->getChoiceLabelFull()
+							)));
 
 							return $this->redirect($this->generateUrl('ilcfrance_orangetools_front_homepage'));
 						} else {
 
-							$this->addFlash(
-								'error',
-								$this->translate('ilcfrance.orangetools.trainee.Sessioninscription.add.failure')
-								);
+							$this->addFlash('error', $this->translate('ilcfrance.orangetools.trainee.Sessioninscription.add.failure'));
 						}
-
 					}
 				}
 			}
@@ -167,10 +158,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.homepage.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:index.html.twig', $this->getTwigVars());
-
 	}
 
-	public function bookingAction()
+	public function bookingAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'booking');
 
@@ -178,10 +168,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.booking.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:booking.html.twig', $this->getTwigVars());
-
 	}
 
-	public function contactAction()
+	public function contactAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'contact');
 
@@ -189,10 +178,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.contact.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:contact.html.twig', $this->getTwigVars());
-
 	}
 
-	public function conditionsAction()
+	public function conditionsAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'conditions');
 
@@ -200,10 +188,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.conditions.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:conditions.html.twig', $this->getTwigVars());
-
 	}
 
-	public function faqAction()
+	public function faqAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'faq');
 
@@ -211,10 +198,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.faq.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:faq.html.twig', $this->getTwigVars());
-
 	}
 
-	public function glossaryAction()
+	public function glossaryAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'glossary');
 
@@ -222,10 +208,9 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.glossary.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:glossary.html.twig', $this->getTwigVars());
-
 	}
 
-	public function preambleAction()
+	public function preambleAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'preamble');
 
@@ -233,7 +218,5 @@ class DefaultController extends SasedevController
 		$this->setPageTitle($this->translate('ilcfrance.orangetools.front.preamble.pagetitle'));
 
 		return $this->render('IlcfranceOrangetoolsFrontBundle:Default:preamble.html.twig', $this->getTwigVars());
-
 	}
-
 }

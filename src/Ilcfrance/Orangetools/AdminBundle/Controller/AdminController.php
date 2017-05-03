@@ -7,6 +7,7 @@ use Ilcfrance\Orangetools\DataBundle\Entity\Role;
 use Ilcfrance\Orangetools\AdminBundle\Form\Admin\NewTForm as AdminNewTForm;
 use Ilcfrance\Orangetools\AdminBundle\Form\Admin\UpdateEmailTForm as AdminUpdateEmailTForm;
 use Ilcfrance\Orangetools\DataBundle\MongoDocument\Trace;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -21,7 +22,7 @@ class AdminController extends SasedevController
 		$this->addTwigVar('menu_active', 'admin_admins');
 	}
 
-	public function listAction()
+	public function listAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_admins_list');
 
@@ -43,7 +44,7 @@ class AdminController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Admin:list.html.twig', $this->getTwigVars());
 	}
 
-	public function addGetAction()
+	public function addGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_admins_add');
 
@@ -59,14 +60,13 @@ class AdminController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Admin:add.html.twig', $this->getTwigVars());
 	}
 
-	public function addPostAction()
+	public function addPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_admins_add');
 
 		$admin = new User();
 		$adminNewForm = $this->createForm(AdminNewTForm::class, $admin);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['AdminNewForm'])) {
@@ -107,14 +107,14 @@ class AdminController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Admin:add.html.twig', $this->getTwigVars());
 	}
 
-	public function deleteAction($id)
+	public function deleteAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_admin_list');
 		}
@@ -142,14 +142,14 @@ class AdminController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editGetAction($id)
+	public function editGetAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_admin_list');
 		}
@@ -203,14 +203,14 @@ class AdminController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editPostAction($id)
+	public function editPostAction($id, Request $request)
 	{
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_admin_list');
 		}
@@ -227,7 +227,6 @@ class AdminController extends SasedevController
 				$this->addTwigVar('tabActive', $this->getSession()->get('tabActive', 1));
 				$this->getSession()->remove('tabActive');
 
-				$request = $this->getRequest();
 				$reqData = $request->request->all();
 
 				if (isset($reqData['AdminUpdateEmailForm'])) {

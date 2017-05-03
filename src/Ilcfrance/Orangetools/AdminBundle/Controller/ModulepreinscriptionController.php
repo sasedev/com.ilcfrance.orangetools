@@ -9,6 +9,7 @@ use Ilcfrance\Orangetools\AdminBundle\Form\Modulepreinscription\UpdateModuleform
 use Ilcfrance\Orangetools\AdminBundle\Form\Modulepreinscription\UpdateLockoutTForm as ModulepreinscriptionUpdateLockoutTForm;
 use Ilcfrance\Orangetools\DataBundle\Entity\Moduleformation;
 use Ilcfrance\Orangetools\DataBundle\MongoDocument\Trace;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -23,7 +24,7 @@ class ModulepreinscriptionController extends SasedevController
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions');
 	}
 
-	public function listAction()
+	public function listAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions_list');
 
@@ -38,7 +39,7 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Modulepreinscription:list.html.twig', $this->getTwigVars());
 	}
 
-	public function listByModuleformationAction($id)
+	public function listByModuleformationAction($id, Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions_list');
 
@@ -65,7 +66,7 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Modulepreinscription:listByModuleformation.html.twig', $this->getTwigVars());
 	}
 
-	public function listByTraineeAction($id)
+	public function listByTraineeAction($id, Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions_list');
 
@@ -92,7 +93,7 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Modulepreinscription:listByTrainee.html.twig', $this->getTwigVars());
 	}
 
-	public function addGetAction()
+	public function addGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions_add');
 
@@ -108,14 +109,13 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Modulepreinscription:add.html.twig', $this->getTwigVars());
 	}
 
-	public function addPostAction()
+	public function addPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_modulepreinscriptions_add');
 
 		$modulepreinscription = new Modulepreinscription();
 		$modulepreinscriptionNewForm = $this->createForm(ModulepreinscriptionNewTForm::class, $modulepreinscription);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['ModulepreinscriptionNewForm'])) {
@@ -148,15 +148,15 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Modulepreinscription:add.html.twig', $this->getTwigVars());
 	}
 
-	public function deleteAction($id)
+	public function deleteAction($id, Request $request)
 	{
 
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_modulepreinscription_list');
 		}
@@ -185,15 +185,15 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editGetAction($id)
+	public function editGetAction($id, Request $request)
 	{
 
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_modulepreinscription_list');
 		}
@@ -245,15 +245,15 @@ class ModulepreinscriptionController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editPostAction($id)
+	public function editPostAction($id, Request $request)
 	{
 
 		/*
-		 * if (! $this->hasRole('ROLE_SUPERADMIN')) {
+		 * if (! $this->isGranted('ROLE_SUPERADMIN')) {
 		 * return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_homepage'));
 		 * }
 		 */
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_modulepreinscription_list');
 		}
@@ -274,7 +274,6 @@ class ModulepreinscriptionController extends SasedevController
 				$this->addTwigVar('stabActive', $this->getSession()->get('stabActive', 1));
 				$this->getSession()->remove('stabActive');
 
-				$request = $this->getRequest();
 				$reqData = $request->request->all();
 
 				if (isset($reqData['ModulepreinscriptionUpdateModuleformationForm'])) {

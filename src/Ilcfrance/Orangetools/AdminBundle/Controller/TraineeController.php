@@ -20,6 +20,7 @@ use Ilcfrance\Orangetools\AdminBundle\Form\Sessioninscription\NewTForm as Sessio
 use Ilcfrance\Orangetools\DataBundle\Entity\Sessioninscription;
 use Ilcfrance\Orangetools\DataBundle\Entity\Moduleformation;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -34,7 +35,7 @@ class TraineeController extends SasedevController
 		$this->addTwigVar('menu_active', 'admin_trainees');
 	}
 
-	public function listAction()
+	public function listAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_trainees_list');
 
@@ -56,7 +57,7 @@ class TraineeController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Trainee:list.html.twig', $this->getTwigVars());
 	}
 
-	public function sendInfosAction()
+	public function sendInfosAction(Request $request)
 	{
 		$em = $this->getEntityManager();
 
@@ -109,7 +110,7 @@ class TraineeController extends SasedevController
 		return $this->redirect($this->generateUrl('ilcfrance_orangetools_admin_trainee_list'));
 	}
 
-	public function exportAction()
+	public function exportAction(Request $request)
 	{
 		$em = $this->getEntityManager();
 
@@ -379,7 +380,7 @@ class TraineeController extends SasedevController
 		return $response;
 	}
 
-	public function addGetAction()
+	public function addGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_trainees_add');
 
@@ -395,14 +396,13 @@ class TraineeController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Trainee:add.html.twig', $this->getTwigVars());
 	}
 
-	public function addPostAction()
+	public function addPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_trainees_add');
 
 		$trainee = new User();
 		$traineeNewForm = $this->createForm(TraineeNewTForm::class, $trainee);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['TraineeNewForm'])) {
@@ -446,7 +446,7 @@ class TraineeController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Trainee:add.html.twig', $this->getTwigVars());
 	}
 
-	public function importGetAction()
+	public function importGetAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_trainees_import');
 
@@ -460,13 +460,12 @@ class TraineeController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Trainee:import.html.twig', $this->getTwigVars());
 	}
 
-	public function importPostAction()
+	public function importPostAction(Request $request)
 	{
 		$this->addTwigVar('menu_active', 'admin_trainees_import');
 
 		$traineeImportForm = $this->createForm(TraineeImportTForm::class);
 
-		$request = $this->getRequest();
 		$reqData = $request->request->all();
 
 		if (isset($reqData['TraineeImportForm'])) {
@@ -699,9 +698,9 @@ class TraineeController extends SasedevController
 		return $this->render('IlcfranceOrangetoolsAdminBundle:Trainee:import.html.twig', $this->getTwigVars());
 	}
 
-	public function deleteAction($id)
+	public function deleteAction($id, Request $request)
 	{
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_trainee_list');
 		}
@@ -729,9 +728,9 @@ class TraineeController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editGetAction($id)
+	public function editGetAction($id, Request $request)
 	{
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_trainee_list');
 		}
@@ -802,9 +801,9 @@ class TraineeController extends SasedevController
 		return $this->redirect($urlFrom);
 	}
 
-	public function editPostAction($id)
+	public function editPostAction($id, Request $request)
 	{
-		$urlFrom = $this->getReferer();
+		$urlFrom = $this->getReferer($request);
 		if (null == $urlFrom || trim($urlFrom) == '') {
 			$urlFrom = $this->generateUrl('ilcfrance_orangetools_admin_trainee_list');
 		}
@@ -841,7 +840,6 @@ class TraineeController extends SasedevController
 				$this->addTwigVar('stabActive', $this->getSession()->get('stabActive', 1));
 				$this->getSession()->remove('stabActive');
 
-				$request = $this->getRequest();
 				$reqData = $request->request->all();
 
 				if (isset($reqData['TraineeUpdateInfosForm'])) {
